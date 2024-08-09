@@ -1,5 +1,29 @@
 var unityInstance = null;
 
+document.addEventListener("DOMContentLoaded", function() {
+    const clickSound = document.getElementById("click-sound");
+    const buttons = document.querySelectorAll("button");
+
+    buttons.forEach(button => {
+        // Evento de clique para reproduzir o som
+        button.addEventListener("click", function() {
+            clickSound.currentTime = 0;  // Rewind to the start
+            clickSound.play();
+        });
+
+        // Evento de mouseover para ampliar o botão
+        button.addEventListener("mouseover", function() {
+            button.style.transform = "scale(1.1)";
+        });
+
+        // Evento de mouseout para retornar ao tamanho original
+        button.addEventListener("mouseout", function() {
+            button.style.transform = "scale(1)";
+        });
+    });
+});
+
+
 document.addEventListener('DOMContentLoaded', function() {
     var menuPanel = document.getElementById('menu-panel');
     var menuButton = document.getElementById('menu');
