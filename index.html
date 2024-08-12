@@ -3,141 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENAC - RS</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: blanchedalmond;
-        }
-        #unityContainer {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #unityCanvas {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 16 / 9;
-            max-height: 100%;
-        }
-        /* Botão configurável para posicionamento */
-        .fullscreen-btn {
-            position: absolute;
-            padding: 0.5%;
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* Classes para posicionamento nos cantos */
-        .top-left {
-            top: 0.5%;
-            left: 0.5%;
-        }
-
-        .top-right {
-            top: 0.5%;
-            right: 0.5%;
-        }
-
-        .bottom-left {
-            bottom: 0.5%;
-            left: 0.5%;
-        }
-
-        .bottom-right {
-            bottom: 0.5%;
-            right: 0.5%;
-        }
-
-        /* Estilos para a imagem dentro do botão */
-        .fullscreen-btn img {
-            width: 30px;
-            height: 30px;
-        }
-
-        /* Media Query para dispositivos móveis */
-        @media (max-width: 767px) {
-            .fullscreen-btn img {
-                width: 30px;
-                height: 30px;
-            }
-        }
-
-        /* Media Query para desktops */
-        @media (min-width: 768px) {
-            .fullscreen-btn img {
-                width: 60px;
-                height: 60px;
-            }
-        }
-        /* Ocultar o botão quando a altura for maior que a largura (modo retrato) */
-        @media (orientation: portrait) {
-            .fullscreen-btn {
-                display: none;
-            }
-        }
-
-        /* Mostrar o botão quando a largura for maior que a altura (modo paisagem) */
-        @media (orientation: landscape) {
-            .fullscreen-btn {
-                display: block;
-            }
-        }
-
-        .progress-bar {
-            width: 35%; 
-            height: 50px; /* Aumentando a altura para 30px */
-            background-color: #ebffc7;
-            position: relative;
-            border-radius: 25px; /* Arredondando os cantos */
-            overflow: hidden; /* Garantindo que o filler não saia dos limites arredondados */
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Adicionando uma sombra para efeito 3D */
-        }
-
-        .filler {
-            height: 100%;
-            background: linear-gradient(90deg, #4caf50, #8bc34a);
-            transition: width 0.3s ease-in-out;
-            border-radius: 15px 0px 0px 15px;
-            background-size: 200% 100%;
-            animation: loadingAnimation 1s infinite;
-        }
-
-        @keyframes loadingAnimation {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        .loadingContainer{
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-        }
-
-        
-    </style>
+    <title>SENAC - RS - Teste BUG</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <audio id="click-sound" src="sounds/click-sound.mp3" preload="auto"></audio>
     <div id="unityContainer">
-        <button class="fullscreen-btn top-right" onclick="toggleFullscreen()">
+        <button class="fullscreen-btn" onclick="toggleFullscreen()">
             <img src="image/zoom-in.png" alt="Fullscreen Toggle" id="fullscreen-icon">
         </button>
         <canvas id="unityCanvas"></canvas>
@@ -147,126 +19,46 @@
             </div>
         </div>
     </div>
+
+    <div id="menu-panel">
+        <button id="acromatopsia" onclick="applyFilter('grayscale')">Acromatopsia</button>
+        <button id="protanomalia" onclick="applyFilter('protanopia')">Protanomalia</button>
+        <button id="deuteranomalia" onclick="applyFilter('deuteranopia')">Deuteranomalia</button>
+        <button id="tritanomalia" onclick="applyFilter('tritanopia')">Tritanomalia</button>
+        <button id="normal" onclick="applyFilter('normal')">Sem Daltonismo</button>
+    </div>
+    <button id="menu"></button>
+    
+    <svg width="0" height="0">
+        <defs>
+            <filter id="deuteranopia">
+                <feColorMatrix type="matrix" values="
+                    0.625, 0.375, 0, 0, 0,
+                    0.7, 0.3, 0, 0, 0,
+                    0, 0.3, 0.7, 0, 0,
+                    0, 0, 0, 1, 0
+                " />
+            </filter>
+            <filter id="protanopia">
+                <feColorMatrix type="matrix" values="
+                    0.567, 0.433, 0, 0, 0,
+                    0.558, 0.442, 0, 0, 0,
+                    0, 0.242, 0.758, 0, 0,
+                    0, 0, 0, 1, 0
+                " />
+            </filter>
+            <filter id="tritanopia">
+                <feColorMatrix type="matrix" values="
+                    0.95, 0.05, 0, 0, 0,
+                    0, 0.433, 0.567, 0, 0,
+                    0, 0.475, 0.525, 0, 0,
+                    0, 0, 0, 1, 0
+                " />
+            </filter>
+        </defs>
+    </svg>
+
     <script src="Build/Build.loader.js"></script>
-    <script>
-        var unityInstance = null;
-
-        function updateProgressBar(value) {
-            const filler = document.getElementById('progressFiller');
-            filler.style.width = `${Math.min(value * 100, 100)}%`;
-            if (value >= 1) {
-                filler.style.animation = 'none';
-                filler.style.backgroundColor = '#00ff00'; // Cor de destaque ao finalizar
-            }
-        }
-
-        function updateButtonIcon() {
-            const icon = document.getElementById("fullscreen-icon");
-            if (document.fullscreenElement) {
-                icon.src = "image/zoom-out.png";
-            } else {
-                icon.src = "image/zoom-in.png";
-            }
-        }
-
-        function toggleFullscreen() {
-            if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {  // Suporte para Safari
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    let docElm = document.documentElement;
-                    if (docElm.requestFullscreen) {
-                        docElm.requestFullscreen();
-                    } else if (docElm.webkitRequestFullscreen) { // Suporte para Safari
-                        docElm.webkitRequestFullscreen();
-                    }
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) { // Suporte para Safari
-                        document.webkitExitFullscreen();
-                    }
-                }
-            } else {
-                alert("Modo de tela cheia não é suportado neste equipamento ou navegador.");
-            }
-        }
-
-        function disableF11(event) {
-            if (event.key === "F11") {
-                event.preventDefault();
-                alert("Use o botão de ZOOM para zoom in e zoom out");
-            }
-        }
-
-        function resizeCanvas() {
-            const canvas = document.getElementById("unityCanvas");
-            const container = document.getElementById("unityContainer");
-            const containerAspectRatio = container.clientWidth / container.clientHeight;
-            const canvasAspectRatio = 16 / 9;
-            
-            if (containerAspectRatio > canvasAspectRatio) {
-                canvas.style.width = `${container.clientHeight * canvasAspectRatio}px`;
-                canvas.style.height = `${container.clientHeight}px`;
-            } else {
-                canvas.style.width = `${container.clientWidth}px`;
-                canvas.style.height = `${container.clientWidth / canvasAspectRatio}px`;
-            }
-
-            if (unityInstance != null) {
-                unityInstance.SendMessage('CanvasResizeHandler', 'OnResize', `${canvas.width},${canvas.height}`);
-            }
-        }
-
-        // Desabilitar F11
-        document.addEventListener("keydown", disableF11);
-
-        // Atualiza o ícone ao carregar a página
-        document.addEventListener('DOMContentLoaded', updateButtonIcon);
-
-        // Verifica se a tela cheia foi ativada ou desativada
-        document.addEventListener('fullscreenchange', updateButtonIcon);
-
-        window.addEventListener("resize", resizeCanvas);
-
-        // var loadingBar = document.querySelector("#unity-loading-bar");
-        // loadingBar.display = "block";
-
-        var script = document.createElement("script");
-        script.src = "Build/Build.loader.js";  // Supondo que 'loaderUrl' seja "Build/Build.loader.js"
-        script.onload = () => {
-
-            // Criar a instância Unity com progressão de carregamento
-            createUnityInstance(document.querySelector("#unityCanvas"), {
-                dataUrl: "Build/Build.data.unityweb",
-                frameworkUrl: "Build/Build.framework.js.unityweb",
-                codeUrl: "Build/Build.wasm.unityweb",
-                streamingAssetsUrl: "StreamingAssets",
-                companyName: "SENAC - RS",
-                productName: "Template_SENAC",
-                productVersion: "1.0",
-            }, (progress) => {
-                
-                // Atualizar barra de progresso
-                updateProgressBar(progress);
-
-            }).then(function (instance) {
-                unityInstance = instance;
-
-                // Ocultar a barra de carregamento quando o conteúdo estiver totalmente carregado
-                var loadingBar = document.getElementById("loadingBar");
-                if (loadingBar) {
-                    loadingBar.style.display = "none";
-                }
-
-                // Reaplica o estilo e garante o redimensionamento após o carregamento completo
-                resizeCanvas();
-
-            }).catch(function (message) {
-                alert(message);
-            });
-        };
-        // Adicionar o script ao documento
-        document.body.appendChild(script);
-    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
-
