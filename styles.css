@@ -33,26 +33,12 @@ body, html {
     background-color: transparent;
     border: none;
     cursor: pointer;
-}
-
-.top-left {
-    top: 0.5%;
-    left: 0.5%;
-}
-
-.top-right {
     top: 0.5%;
     right: 0.5%;
 }
 
-.bottom-left {
-    bottom: 0.5%;
-    left: 0.5%;
-}
-
-.bottom-right {
-    bottom: 0.5%;
-    right: 0.5%;
+.fullscreen-btn:hover {
+    transform: scale(1.1);
 }
 
 .fullscreen-btn img {
@@ -161,24 +147,28 @@ body, html {
 }
 
 #menu {
-    width: 50px; /* Ajuste o tamanho do botão conforme necessário */
+    width: 50px; 
     height: 50px;
     position: fixed;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+    transform-origin: right center; /* Define a âncora no canto direito e centro vertical */
     border: none;
     padding: 15px;
     cursor: pointer;
     z-index: 2;
-    transition: right 0.3s ease;
+    transition: transform 0.3s ease, right 0.3s ease;
 
     background-image: url('./image/btn-daltonismo.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     background-color: transparent;
-    
+}
+
+#menu:hover {
+    transform: translateY(-50%) scale(1.1);
 }
 
 #menu-panel {

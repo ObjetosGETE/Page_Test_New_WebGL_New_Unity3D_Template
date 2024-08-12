@@ -10,16 +10,6 @@ document.addEventListener("DOMContentLoaded", function() {
             clickSound.currentTime = 0;  // Rewind to the start
             clickSound.play();
         });
-
-        // Evento de mouseover para ampliar o botão
-        button.addEventListener("mouseover", function() {
-            button.style.transform = "scale(1.1)";
-        });
-
-        // Evento de mouseout para retornar ao tamanho original
-        button.addEventListener("mouseout", function() {
-            button.style.transform = "scale(1)";
-        });
     });
 });
 
