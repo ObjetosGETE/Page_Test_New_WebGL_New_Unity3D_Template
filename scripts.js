@@ -92,7 +92,7 @@ function resizeCanvas() {
     }
 
     if (unityInstance != null) {
-        // unityInstance.SendMessage('CanvasResizeHandler', 'OnResize', `${canvas.width},${canvas.height}`);
+        unityInstance.SendMessage('CanvasResizeHandler', 'OnResize', `${canvas.width},${canvas.height}`);
     }
 }
 
